@@ -11,8 +11,10 @@ namespace proyectoFinalconMVC.Models
     {
         public int id { get; set; }
 
+        [Required(ErrorMessage = "Debe completar campo")]
         public string nombre { get; set; }
 
+        [Required]
         public Categoria categoria { get; set; }
     }
 }
