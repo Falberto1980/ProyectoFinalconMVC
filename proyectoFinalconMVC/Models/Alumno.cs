@@ -32,5 +32,7 @@ namespace proyectoFinalconMVC.Models
         public int edad { get; set; }
 
        // public List<Curso> cursosSeleccionados { get; set; }
+
+        
     }
 }
