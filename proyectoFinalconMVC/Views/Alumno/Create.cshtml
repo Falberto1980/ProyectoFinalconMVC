@@ -1,5 +1,7 @@
 ﻿@model proyectoFinalconMVC.Models.Alumno
 
+
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -37,9 +39,20 @@
                 <input asp-for="edad" class="form-control" />
                 <span asp-validation-for="edad" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="cursos" class="control-label"></label>
+
+                @Html.ListBoxFor(m => m.cursos, new MultiSelectList(ViewBag.listaCursos, "id", "nombre", new List<SelectListItem>(), "categoria"),
+                new
+                {
+                    @style = $"width:400px; height:{60* ViewBag.listaCursos.Count }px; padding:15px;",
+                    @align = "left"
+                } )
             </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
         </form>
     </div>
 </div>

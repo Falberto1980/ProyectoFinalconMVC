@@ -16,5 +16,7 @@ namespace proyectoFinalconMVC.Models
         INGENIERIA,
 
         MANUALIDADES
+
+    
     }
 }

@@ -32,13 +32,17 @@ namespace proyectoFinalconMVC.Controllers
             {
                 return NotFound();
             }
+            //Si no se habilita el lazyload (actualmente activo, revisar los modelos)
+            //var alumno = await _context.Alumnos.Include(a=>a.inscripciones).ThenInclude(i=>i.curso)
 
             var alumno = await _context.Alumnos
                 .FirstOrDefaultAsync(m => m.id == id);
+           
+
             if (alumno == null)
             {
                 return NotFound();
-            }
+            } 
 
             return View(alumno);
         }
@@ -46,6 +50,8 @@ namespace proyectoFinalconMVC.Controllers
         // GET: Alumno/Create
         public IActionResult Create()
         {
+            ViewBag.listaCursos = _context.Cursos.ToList();
+
             return View();
         }
 
@@ -54,14 +60,24 @@ namespace proyectoFinalconMVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,alias,nombreCompleto,dni,mail,edad")] Alumno alumno)
+        public async Task<IActionResult> Create(Alumno alumno, [FromForm]int[] cursos)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(alumno);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var dni = _context.Alumnos.SingleOrDefault(i => i.dni == alumno.dni) == null;
+
+                if (!dni) ModelState.AddModelError(nameof(Alumno.dni), "El DNI ya existe");
+
+                try
+                {
+                    alumno.cursos = _context.Cursos.Where(i => cursos.Any(id => id == i.id)).ToList();
+                    _context.Add(alumno);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch { }
             }
+            ViewBag.listaCursos = _context.Cursos.ToList();
             return View(alumno);
         }
 
@@ -78,6 +94,9 @@ namespace proyectoFinalconMVC.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.listaCursos = _context.Cursos.ToList();
+
             return View(alumno);
         }
 
@@ -86,17 +105,23 @@ namespace proyectoFinalconMVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,alias,nombreCompleto,dni,mail,edad")] Alumno alumno)
+        public async Task<IActionResult> Edit(Alumno alumno, [FromForm] int[] cursos)
         {
+            /*
             if (id != alumno.id)
             {
                 return NotFound();
             }
-
+            */
             if (ModelState.IsValid)
             {
                 try
                 {
+                    //Clear and Up
+                    _context.InscripcionAlumno.RemoveRange(_context.InscripcionAlumno.Where(i => i.IDalumno == alumno.id).ToList());
+
+                    alumno.cursos = _context.Cursos.Where(i => cursos.Any(id => id == i.id)).ToList();
+
                     _context.Update(alumno);
                     await _context.SaveChangesAsync();
                 }

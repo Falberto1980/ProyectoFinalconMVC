@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using proyectoFinalconMVC.Context;
 
 namespace proyectoFinalconMVC.Migrations
 {
     [DbContext(typeof(PortalDatabaseContext))]
-    partial class PortalDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211108010555_p")]
+    partial class p
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

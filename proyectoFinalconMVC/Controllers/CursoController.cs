@@ -14,6 +14,7 @@ namespace proyectoFinalconMVC.Controllers
     {
         private readonly PortalDatabaseContext _context;
 
+
         public CursoController(PortalDatabaseContext context)
         {
             _context = context;
@@ -22,7 +23,8 @@ namespace proyectoFinalconMVC.Controllers
         // GET: Curso
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cursos.ToListAsync());
+            
+            return View(_context.Cursos.ToList());
         }
 
         // GET: Curso/Details/5
@@ -46,6 +48,7 @@ namespace proyectoFinalconMVC.Controllers
         // GET: Curso/Create
         public IActionResult Create()
         {
+            ViewBag.listaAlumnos = _context.Alumnos.ToList();
             return View();
         }
 
@@ -54,14 +57,16 @@ namespace proyectoFinalconMVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,nombre,categoria")] Curso curso)
+        public async Task<IActionResult> Create(Curso curso, [FromForm] int[] alumnos)
         {
             if (ModelState.IsValid)
             {
+                curso.alumnos = _context.Alumnos.Where(i => alumnos.Any(id=>id==i.id)).ToList();
                 _context.Add(curso);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.listaAlumnos = _context.Alumnos.ToList();
             return View(curso);
         }
 
@@ -78,6 +83,7 @@ namespace proyectoFinalconMVC.Controllers
             {
                 return NotFound();
             }
+            ViewBag.listaAlumnos = _context.Alumnos.ToList();
             return View(curso);
         }
 
@@ -86,17 +92,17 @@ namespace proyectoFinalconMVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,nombre,categoria")] Curso curso)
+        public async Task<IActionResult> Edit(Curso curso, [FromForm] int[] alumnos)
         {
-            if (id != curso.id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
+                    _context.InscripcionAlumno.RemoveRange(_context.InscripcionAlumno.Where(i => i.IDcurso == curso.id).ToList());
+
+                    curso.alumnos = _context.Alumnos.Where(i => alumnos.Any(id => id == i.id)).ToList();
+
                     _context.Update(curso);
                     await _context.SaveChangesAsync();
                 }
@@ -113,6 +119,7 @@ namespace proyectoFinalconMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.listaAlumnos = _context.Alumnos.ToList();
             return View(curso);
         }
 

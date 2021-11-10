@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using proyectoFinalconMVC.Context;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,5 +18,18 @@ namespace proyectoFinalconMVC.Models
 
         [Required]
         public Categoria categoria { get; set; }
+
+        [NotMapped]
+        public List<Alumno> alumnos {
+            get => inscripciones?.Select(i=>i.alumno).ToList();
+            set=>inscripciones?.AddRange(value.Select(i => new InscripcionAlumno(alumno: i, curso: this))); 
+        }
+
+        ///la interfaz lazyloads que ademas nos provee carga en la creacion.
+        ///
+        private ILazyLoader LazyLoader { get; set; }
+        private List<InscripcionAlumno> _inscripciones = new List<InscripcionAlumno>();
+        public List<InscripcionAlumno> inscripciones { get => LazyLoader.Load(this, ref _inscripciones); set => _inscripciones = value; }
+
     }
 }
