@@ -59,9 +59,25 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background-color: #012;
+    color: #fff;
 }
+
+th {
+    color: #fff;
+}
+
+td {
+    color: #fff;
+}
+
+.imagen {
+    margin-left: 215px;
+    padding-top: 90px;
+}
+
 .footer {
   position: absolute;
   bottom: 0;

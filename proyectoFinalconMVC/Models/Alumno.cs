@@ -23,6 +23,7 @@ namespace proyectoFinalconMVC.Models
 
         [Required(ErrorMessage = "Debe completar su nombre")]
         [DataType(DataType.Text)]
+        [Display(Name = "Nombre completo")]
         public string nombreCompleto { get; set; }
 
         [Required(ErrorMessage = "Debe completar el DNI")]
